@@ -29,21 +29,25 @@ public class MyPuzzleListFragment extends ListFragment {
         final Observer<ArrayList<Puzzle>> puzzleObserver = new Observer<ArrayList<Puzzle>>() {
             @Override
             public void onChanged(@Nullable ArrayList<Puzzle> puzzles) {
+                Log.e("OnChanged()", "OnChanged Called");
                 PuzzleAdapter puzzleAdapter = new PuzzleAdapter(getActivity(), mViewModel.getPuzzles().getValue());
                 setListAdapter(puzzleAdapter);
             }
         };
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer
-        mViewModel.getPuzzles().observe(this, puzzleObserver);
+        try {
+            mViewModel.getPuzzles().observe(this, puzzleObserver);
+        } catch(NullPointerException e) {
+            Log.e("MyPuzzleListFragment", e.getMessage());
+        }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        PuzzleAdapter puzzleAdapter = new PuzzleAdapter(getActivity(), mViewModel.getPuzzles().getValue());
-        setListAdapter(puzzleAdapter);
+      // PuzzleAdapter puzzleAdapter = new PuzzleAdapter(getActivity(), mViewModel.getPuzzles().getValue());
+      //  setListAdapter(puzzleAdapter);
 
 
     }

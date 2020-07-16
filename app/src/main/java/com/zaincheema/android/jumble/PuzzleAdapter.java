@@ -32,7 +32,7 @@ public class PuzzleAdapter extends ArrayAdapter<Puzzle> {
         Puzzle currentPuzzle = mPuzzleList.get(position);
 
         TextView puzzleName = (TextView) puzzleItem.findViewById(R.id.textView_puzzle_title);
-        puzzleName.setText("WHOA");
+        puzzleName.setText(currentPuzzle.getName());
 
         return puzzleItem;
     }

@@ -1,5 +1,6 @@
 package com.zaincheema.android.jumble;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -33,6 +34,7 @@ public class PuzzleRepository {
     private Context mApplicationContext;
 
     private JSONArray puzzleNames;
+    private JSONArray pictureSets;
 
     private String indexUrl = "https://goparker.com/600096/jumble/index.json";
     private String basePuzzleUrl = "https://goparker.com/600096/jumble/puzzles/";
@@ -41,14 +43,11 @@ public class PuzzleRepository {
     private String baseImagesUrl = "https://goparker.com/600096/jumble/images/";
 
     // TODO: mPuzzles will be set after the index has been gone through in its entirety, below method is a placeholder
-    private LiveData<ArrayList<Puzzle>> mPuzzles = new LiveData<ArrayList<Puzzle>>() {
-        @Override
-        public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<ArrayList<Puzzle>> observer) {
-            super.observe(owner, observer);
-        }
-    };
+    private MutableLiveData<ArrayList<Puzzle>> mPuzzles = new MutableLiveData<>();
 
     private LiveData<Puzzle> mSelectedPuzzle;
+
+    private int puzzleDataIndex = 0;
 
     private String mName;
     private int mRows;
@@ -68,13 +67,6 @@ public class PuzzleRepository {
         return sPuzzleRepository;
     }
 
-    public LiveData<ArrayList<Puzzle>> getPuzzles() {
-        if(mPuzzles == null) {
-            loadPuzzlesFromJSON();
-        }
-        return mPuzzles;
-    }
-
     public LiveData<Puzzle> getPuzzle(final int pPuzzleIndex) {
 
         LiveData<Puzzle> transformedPuzzle = Transformations.switchMap(mPuzzles, puzzles -> {
@@ -89,9 +81,8 @@ public class PuzzleRepository {
         return mSelectedPuzzle;
     }
 
-    public LiveData<ArrayList<Puzzle>> loadPuzzlesFromJSON() {
+    public void loadPuzzlesFromJSON() {
         RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
-        final MutableLiveData<ArrayList<Puzzle>> mutablePuzzles = new MutableLiveData<ArrayList<Puzzle>>();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
@@ -101,16 +92,11 @@ public class PuzzleRepository {
                     Log.d("loadPuzzlesFromJSON()", "Response received");
                     try {
                         puzzleNames = response.getJSONArray("PuzzleIndex");
+                        // When puzzle index is loaded, parse the first one
+                        parsePuzzleData(puzzleDataIndex);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-                    // When puzzle index is loaded, load the first one
-                    parseJSONResponse(response, 0);
-
-                   // TODO: Make the commented code below run when every puzzle in the index has been run through
-                   mutablePuzzles.setValue(puzzles);
-                   mPuzzles = mutablePuzzles;
                 },
                 error -> {
                     String errorResponse = "That didn't work!";
@@ -118,36 +104,29 @@ public class PuzzleRepository {
                 });
 
         queue.add(jsonObjectRequest);
-
-       return mutablePuzzles;
     }
 
-    private void parseJSONResponse(JSONObject pResponse, int pIndex) {
-        String puzzleDataUrl;
+    private void parsePuzzleData(int pIndex) {
+        Log.e("PARSEPUZZLEDATA()", "parsePuzzleData(---) entered");
+
+        String pUrl = "";
 
         try {
-           if(pIndex < puzzleNames.length()) {
-               String fileName = (String) puzzleNames.get(pIndex);
-               Log.d("PARSING", fileName);
-               puzzleDataUrl = basePuzzleUrl + fileName;
+            if (pIndex < puzzleNames.length()) {
+                String fileName = (String) puzzleNames.get(pIndex);
+                Log.d("PARSING", fileName);
+                pUrl = basePuzzleUrl + fileName;
 
-               Log.d("PUZZLE URL", puzzleDataUrl);
+                Log.e("PUZZLE URL", pUrl);
+            } else {
+                Log.e("Puzzle Index ended", "setPuzzles() entered");
+                mPuzzles.postValue(puzzles);
+                return;
+            }
 
-               parsePuzzleData(puzzleDataUrl);
-           }
-
-
-
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             Log.e("VOLLEY", e.getMessage());
         }
-
-       // return puzzles;
-    }
-
-    private void parsePuzzleData(String pUrl) {
-
-        Log.e("PARSEPUZZLEDATA()", "parsePuzzleData(---) entered");
 
         RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
 
@@ -171,7 +150,7 @@ public class PuzzleRepository {
 
 
                         JSONArray pictureSets = response.getJSONArray("PictureSet");
-                        for(int i = 0; i < pictureSets.length(); i++) {
+                        for (int i = 0; i < pictureSets.length(); i++) {
 
                             String pictureUrl = (String) pictureSets.get(i);
                             String fullPictureUrl = baseImagesUrl + pictureUrl;
@@ -188,11 +167,9 @@ public class PuzzleRepository {
                     }
                 },
                 error -> {
-
                 });
 
         queue.add(jsonObjectRequest);
-
     }
 
     private void parseLayoutData(String pUrl, ArrayList<String> pPictureSetUrls) {
@@ -202,62 +179,59 @@ public class PuzzleRepository {
         RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-            Request.Method.GET,
-            pUrl,
-            null,
-            response -> {
-                try {
-                    // TODO: Ascertain whether the JSON values for 'row' and 'column' are string or int
-                    //Log.e("ROW", response.getString("rows"));
-                    mRows = Integer.valueOf(response.getString("rows"));
-                    //Log.e("COLUMNS", response.getString("columns"));
-                    mColumns = Integer.valueOf(response.getString("columns"));
+                Request.Method.GET,
+                pUrl,
+                null,
+                response -> {
+                    try {
+                        //Log.e("ROW", response.getString("rows"));
+                        mRows = Integer.valueOf(response.getString("rows"));
+                        //Log.e("COLUMNS", response.getString("columns"));
+                        mColumns = Integer.valueOf(response.getString("columns"));
 
-                    ArrayList<ArrayList<String>> layout = new ArrayList<ArrayList<String>>();
-                    JSONArray jsonLayout = response.getJSONArray("layout");
+                        ArrayList<ArrayList<String>> layout = new ArrayList<ArrayList<String>>();
+                        JSONArray jsonLayout = response.getJSONArray("layout");
 
-                    for(int i = 0; i < jsonLayout.length(); i++) {
-                        JSONArray jsonRow = jsonLayout.getJSONArray(i);
-                        ArrayList<String> row = new ArrayList<String>();
+                        for (int i = 0; i < jsonLayout.length(); i++) {
+                            JSONArray jsonRow = jsonLayout.getJSONArray(i);
+                            ArrayList<String> row = new ArrayList<String>();
 
-                        for(int y = 0; y < jsonRow.length(); y++) {
-                            String value = (String) jsonRow.get(y);
-                            row.add(value);
+                            for (int y = 0; y < jsonRow.length(); y++) {
+                                String value = (String) jsonRow.get(y);
+                                row.add(value);
+                            }
+
+                            layout.add(row);
                         }
 
-                        layout.add(row);
+                        mLayout = layout;
+
+                        int dimensions = mRows * mColumns;
+
+                        parsePictureSet(pPictureSetUrls, dimensions);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
 
-                    mLayout = layout;
+                },
+                error -> {
 
-                    int dimensions = mRows * mColumns;
-
-                    parsePictureSet(pPictureSetUrls, dimensions);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            },
-            error -> {
-
-            });
+                });
 
         queue.add(jsonObjectRequest);
     }
 
-
     private void parsePictureSet(ArrayList<String> pUrls, int pDimensions) {
 
-        Log.e("PARSEPICTURESET()", "parsePuzzleData(---) entered");
+        Log.e("PARSEPICTURESET()", "parsePictureSet(---) entered");
 
-        Log.e("DIMENSIONS", String.valueOf(pDimensions));
 
         ArrayList<String> tilePaths = new ArrayList<String>();
 
-        for(int i = 0; i < pUrls.size(); i++) {
+        for (int i = 0; i < pUrls.size(); i++) {
             String fullPictureUrl;
-            for(int y = 0; y == pDimensions; y++) {
+            for (int y = 0; y == pDimensions; y++) {
                 String imageFile = String.valueOf(y) + ".png";
                 fullPictureUrl = pUrls.get(i) + imageFile;
                 tilePaths.add(fullPictureUrl);
@@ -266,27 +240,23 @@ public class PuzzleRepository {
 
         mTilePaths = tilePaths;
 
-        Log.e("TAG", mName);
-
         puzzles.add(makePuzzleObject());
 
-        MutableLiveData<ArrayList<Puzzle>> mutable = new MutableLiveData<ArrayList<Puzzle>>();
-        mutable.setValue(puzzles);
-        mPuzzles = mutable;
+        parsePuzzleData(puzzleDataIndex++);
     }
 
     private void loadTiles(ArrayList<String> pUrls, MutableLiveData<Puzzle> pPuzzleData) {
         RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
         final MutableLiveData<Puzzle> mutablePuzzle = pPuzzleData;
 
-        for(int i = 0; i < pUrls.size(); i++) {
+        for (int i = 0; i < pUrls.size(); i++) {
 
             ImageRequest imageRequest = new ImageRequest(
                     pUrls.get(i), bitmap -> {
-                        Puzzle puzzle = mutablePuzzle.getValue();
-                        puzzle.addTile(bitmap);
-                        mutablePuzzle.setValue(puzzle);
-                    },
+                Puzzle puzzle = mutablePuzzle.getValue();
+                puzzle.addTile(bitmap);
+                mutablePuzzle.setValue(puzzle);
+            },
                     0, 0,
                     ImageView.ScaleType.CENTER_CROP,
                     Bitmap.Config.RGB_565,
@@ -299,16 +269,19 @@ public class PuzzleRepository {
 
     }
 
-
     private Puzzle makePuzzleObject() {
         Puzzle puzzle = new Puzzle(mName, mRows, mColumns, mLayout, mTilePaths);
 
         Log.e("makePuzzleObject()", "PuzzleObjectMade");
 
-        if(mName == null) {
+        if (mName == null) {
             Log.e("makePuzzleObject()", "mName is NULL");
         }
 
         return puzzle;
+    }
+
+    public MutableLiveData<ArrayList<Puzzle>> getPuzzles() {
+        return mPuzzles;
     }
 }

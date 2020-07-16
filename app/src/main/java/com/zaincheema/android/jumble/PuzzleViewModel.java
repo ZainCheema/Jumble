@@ -3,12 +3,13 @@ package com.zaincheema.android.jumble;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 
 public class PuzzleViewModel extends AndroidViewModel {
-    private LiveData<ArrayList<Puzzle>> mPuzzles;
     private LiveData<Puzzle> mSelectedPuzzle;
     private PuzzleRepository mPuzzleRepository;
     private int mSelectedIndex;
@@ -16,13 +17,12 @@ public class PuzzleViewModel extends AndroidViewModel {
     public PuzzleViewModel(@NonNull Application pApplication) {
         super(pApplication);
         mPuzzleRepository = PuzzleRepository.getInstance(getApplication());
+        Log.e("PuzzleViewModel", "loadPuzzleFromJSON() reached");
+        mPuzzleRepository.loadPuzzlesFromJSON();
     }
 
     public LiveData<ArrayList<Puzzle>> getPuzzles() {
-        if(mPuzzles == null) {
-            mPuzzles = mPuzzleRepository.getPuzzles();
-        }
-        return mPuzzles;
+        return mPuzzleRepository.getPuzzles();
     }
 
     public LiveData<Puzzle> getPuzzle(int pPuzzleIndex) {
