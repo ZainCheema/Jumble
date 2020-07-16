@@ -1,15 +1,22 @@
 package com.zaincheema.android.jumble;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
+
+import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
+    private ArrayList<Bitmap> mImages;
 
-    public ImageAdapter(Context c) {
+    public ImageAdapter(Context c, ArrayList<Bitmap> i) {
         mContext = c;
+        mImages = i;
     }
 
     @Override
@@ -29,6 +36,10 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        return null;
+        ImageView imageView = new ImageView(mContext);
+        imageView.setImageBitmap(mImages.get(i));
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setLayoutParams(new GridView.LayoutParams(70, 70));
+        return imageView;
     }
 }

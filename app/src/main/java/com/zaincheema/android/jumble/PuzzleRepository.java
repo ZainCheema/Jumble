@@ -45,7 +45,7 @@ public class PuzzleRepository {
     // TODO: mPuzzles will be set after the index has been gone through in its entirety, below method is a placeholder
     private MutableLiveData<ArrayList<Puzzle>> mPuzzles = new MutableLiveData<>();
 
-    private LiveData<Puzzle> mSelectedPuzzle;
+    private MutableLiveData<Puzzle> mSelectedPuzzle;
 
     private int puzzleDataIndex = 0;
 
@@ -67,17 +67,22 @@ public class PuzzleRepository {
         return sPuzzleRepository;
     }
 
+    // TODO: Problem area, why mPuzzle is null
     public LiveData<Puzzle> getPuzzle(final int pPuzzleIndex) {
 
-        LiveData<Puzzle> transformedPuzzle = Transformations.switchMap(mPuzzles, puzzles -> {
-            MutableLiveData<Puzzle> puzzleData = new MutableLiveData<Puzzle>();
-            Puzzle puzzle = puzzles.get(pPuzzleIndex);
-            puzzleData.setValue(puzzle);
-            loadTiles(puzzle.getTilePaths(), puzzleData);
-            return puzzleData;
-        });
+//        LiveData<Puzzle> transformedPuzzle = Transformations.switchMap(mPuzzles, puzzles -> {
+//            MutableLiveData<Puzzle> puzzleData = new MutableLiveData<Puzzle>();
+//            Puzzle puzzle = puzzles.get(pPuzzleIndex);
+//            puzzleData.setValue(puzzle);
+//            loadTiles(puzzle.getTilePaths(), puzzleData);
+//            return puzzleData;
+//        });
 
-        mSelectedPuzzle = transformedPuzzle;
+        Puzzle puzzle = puzzles.get(pPuzzleIndex);
+        mSelectedPuzzle.setValue(puzzle);
+
+        loadTiles(puzzle.getTilePaths(), mSelectedPuzzle);
+       // mSelectedPuzzle = transformedPuzzle;
         return mSelectedPuzzle;
     }
 

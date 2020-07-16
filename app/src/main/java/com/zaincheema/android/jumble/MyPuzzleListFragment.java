@@ -4,7 +4,10 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
@@ -59,13 +62,10 @@ public class MyPuzzleListFragment extends ListFragment {
     }
 
     void showContent(int index) {
-        Intent intent = new Intent();
-
-        intent.setClass(getActivity(), PuzzleActivity.class);
-
-        // pass the current position
-        intent.putExtra("index", index);
-
-        startActivity(intent);
+        PuzzleFragment puzzleFragment = new PuzzleFragment();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(0, puzzleFragment);
+        fragmentTransaction.commit();
     }
 }
