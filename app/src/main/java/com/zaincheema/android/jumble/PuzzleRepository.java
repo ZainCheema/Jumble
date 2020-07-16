@@ -262,11 +262,11 @@ public class PuzzleRepository {
                     Bitmap.Config.RGB_565,
                     error -> {
                         String errorResponse = "That didn't work!";
+                        Log.e("loadTiles()", errorResponse);
                     });
 
             queue.add(imageRequest);
         }
-
     }
 
     private Puzzle makePuzzleObject() {
