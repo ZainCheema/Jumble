@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,17 @@ import android.widget.GridView;
 
 public class PuzzleFragment extends Fragment {
 
+    public PuzzleFragment() {
 
-    View rootView;
+    }
+
+    public static PuzzleFragment newInstance() {
+        PuzzleFragment fragment = new PuzzleFragment();
+        return fragment;
+    }
+
+
+    View view;
     PuzzleViewModel mViewModel;
     Puzzle mPuzzle;
 
@@ -28,14 +38,17 @@ public class PuzzleFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.puzzle_grid, container, false);
 
-        mPuzzle = mViewModel.getSelectedPuzzle().getValue();
+        view = inflater.inflate(R.layout.puzzle_grid, container, false);
 
-        GridView gridView = (GridView) rootView.findViewById(R.id.grid);
+      //  Log.e("PuzzleFragment", "View created");
 
-        gridView.setAdapter(new ImageAdapter(getContext(), mPuzzle.getTiles()));
+        mPuzzle = mViewModel.getPuzzle().getValue();
 
-        return rootView;
+     GridView gridView = (GridView) view.findViewById(R.id.grid);
+
+     gridView.setAdapter(new ImageAdapter(getContext(), mPuzzle.getTiles()));
+
+     return view;
     }
 }

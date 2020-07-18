@@ -25,17 +25,14 @@ public class PuzzleViewModel extends AndroidViewModel {
         return mPuzzleRepository.getPuzzles();
     }
 
-    public LiveData<Puzzle> getPuzzle(int pPuzzleIndex) {
-        return mPuzzleRepository.getPuzzle(pPuzzleIndex);
+    public LiveData<Puzzle> getPuzzle() {
+        return mSelectedPuzzle;
     }
 
     public void selectPuzzle(int pIndex) {
         if(pIndex != mSelectedIndex || mSelectedPuzzle == null) {
             mSelectedIndex = pIndex;
-            mSelectedPuzzle = getPuzzle(mSelectedIndex);
         }
+       mSelectedPuzzle = mPuzzleRepository.getPuzzle(mSelectedIndex);
     }
-
-    public LiveData<Puzzle> getSelectedPuzzle() { return mSelectedPuzzle; }
-
 }

@@ -45,8 +45,6 @@ public class PuzzleRepository {
     // TODO: mPuzzles will be set after the index has been gone through in its entirety, below method is a placeholder
     private MutableLiveData<ArrayList<Puzzle>> mPuzzles = new MutableLiveData<>();
 
-    private MutableLiveData<Puzzle> mSelectedPuzzle;
-
     private int puzzleDataIndex = 0;
 
     private String mName;
@@ -77,6 +75,8 @@ public class PuzzleRepository {
 //            loadTiles(puzzle.getTilePaths(), puzzleData);
 //            return puzzleData;
 //        });
+
+        MutableLiveData<Puzzle> mSelectedPuzzle = new MutableLiveData<>();
 
         Puzzle puzzle = puzzles.get(pPuzzleIndex);
         mSelectedPuzzle.setValue(puzzle);

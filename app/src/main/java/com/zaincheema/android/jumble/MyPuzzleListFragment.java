@@ -22,6 +22,15 @@ import java.util.ArrayList;
 public class MyPuzzleListFragment extends ListFragment {
     PuzzleViewModel mViewModel;
 
+    public MyPuzzleListFragment() {
+        // Required empty public constructor
+    }
+
+    public static MyPuzzleListFragment newInstance() {
+        MyPuzzleListFragment fragment = new MyPuzzleListFragment();
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,15 +66,20 @@ public class MyPuzzleListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        Log.e("MyPuzzleListFragment", "CLICKED!!!");
         mViewModel.selectPuzzle(position);
         showContent(position);
     }
 
     void showContent(int index) {
-        PuzzleFragment puzzleFragment = new PuzzleFragment();
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(0, puzzleFragment);
-        fragmentTransaction.commit();
+        Log.e("ShowContent()", "ShowContent() reached");
+        PuzzleFragment puzzleFragment = PuzzleFragment.newInstance();
+
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction
+                .remove(MyPuzzleListFragment.this)
+                .replace(R.id.fragment_holder, puzzleFragment, null)
+                .addToBackStack(null)
+                .commit();
     }
 }

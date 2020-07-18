@@ -37,7 +37,7 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         ImageView imageView = new ImageView(mContext);
-        imageView.setImageBitmap(mImages.get(i));
+        imageView.setImageResource(R.drawable.iggy);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setLayoutParams(new GridView.LayoutParams(70, 70));
         return imageView;
