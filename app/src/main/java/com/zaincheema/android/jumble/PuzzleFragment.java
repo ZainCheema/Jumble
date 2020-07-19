@@ -41,7 +41,7 @@ public class PuzzleFragment extends Fragment {
 
         view = inflater.inflate(R.layout.puzzle_grid, container, false);
 
-      //  Log.e("PuzzleFragment", "View created");
+      Log.e("PuzzleFragment", "View created");
 
         mPuzzle = mViewModel.getPuzzle().getValue();
 

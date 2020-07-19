@@ -2,6 +2,8 @@ package com.zaincheema.android.jumble;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -13,15 +15,32 @@ import java.util.ArrayList;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Bitmap> mImages;
+    LayoutInflater inflater;
+
+    public Integer[] thumbImages = {
+            R.drawable.iggy,
+            R.drawable.iggy,
+            R.drawable.iggy,
+            R.drawable.iggy,
+            R.drawable.iggy,
+            R.drawable.iggy,
+            R.drawable.iggy,
+            R.drawable.iggy,
+            R.drawable.iggy,
+            R.drawable.iggy,
+            R.drawable.iggy,
+            R.drawable.iggy
+    };
 
     public ImageAdapter(Context c, ArrayList<Bitmap> i) {
         mContext = c;
         mImages = i;
+        inflater = (LayoutInflater.from(mContext));
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return thumbImages.length;
     }
 
     @Override
@@ -36,10 +55,14 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ImageView imageView = new ImageView(mContext);
-        imageView.setImageResource(R.drawable.iggy);
+        view = inflater.inflate(R.layout.grid_image, null);
+
+        Log.e("ImageAdapter", "Show Grid");
+
+        ImageView imageView = (ImageView) view.findViewById(R.id.icon);
+        imageView.setImageResource( R.drawable.iggy);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setLayoutParams(new GridView.LayoutParams(70, 70));
-        return imageView;
+    //    imageView.setLayoutParams(new GridView.LayoutParams(70, 70));
+        return view;
     }
 }
