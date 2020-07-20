@@ -15,6 +15,8 @@ import android.widget.GridView;
 
 public class PuzzleFragment extends Fragment {
 
+
+
     public PuzzleFragment() {
 
     }
@@ -43,7 +45,7 @@ public class PuzzleFragment extends Fragment {
 
       Log.e("PuzzleFragment", "View created");
 
-        mPuzzle = mViewModel.getPuzzle().getValue();
+        mPuzzle = mViewModel.getSelectedPuzzle().getValue();
 
      GridView gridView = (GridView) view.findViewById(R.id.grid);
 

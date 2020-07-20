@@ -10,7 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class PuzzleViewModel extends AndroidViewModel {
-    private LiveData<Puzzle> mSelectedPuzzle;
+    private MutableLiveData<Puzzle> mSelectedPuzzle = new MutableLiveData<>();
     private PuzzleRepository mPuzzleRepository;
     private int mSelectedIndex;
 
@@ -25,7 +25,7 @@ public class PuzzleViewModel extends AndroidViewModel {
         return mPuzzleRepository.getPuzzles();
     }
 
-    public LiveData<Puzzle> getPuzzle() {
+    public LiveData<Puzzle> getSelectedPuzzle() {
         return mSelectedPuzzle;
     }
 
@@ -33,6 +33,6 @@ public class PuzzleViewModel extends AndroidViewModel {
         if(pIndex != mSelectedIndex || mSelectedPuzzle == null) {
             mSelectedIndex = pIndex;
         }
-       mSelectedPuzzle = mPuzzleRepository.getPuzzle(mSelectedIndex);
+       mSelectedPuzzle.setValue(mPuzzleRepository.getPuzzle(mSelectedIndex));
     }
 }

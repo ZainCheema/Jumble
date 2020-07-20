@@ -60,8 +60,6 @@ public class MyPuzzleListFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
       // PuzzleAdapter puzzleAdapter = new PuzzleAdapter(getActivity(), mViewModel.getPuzzles().getValue());
       //  setListAdapter(puzzleAdapter);
-
-
     }
 
     @Override

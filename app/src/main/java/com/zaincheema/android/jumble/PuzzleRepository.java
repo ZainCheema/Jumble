@@ -66,7 +66,7 @@ public class PuzzleRepository {
     }
 
     // TODO: Problem area, why mPuzzle is null
-    public LiveData<Puzzle> getPuzzle(final int pPuzzleIndex) {
+    public Puzzle getPuzzle(final int pPuzzleIndex) {
 
 //        LiveData<Puzzle> transformedPuzzle = Transformations.switchMap(mPuzzles, puzzles -> {
 //            MutableLiveData<Puzzle> puzzleData = new MutableLiveData<Puzzle>();
@@ -79,11 +79,13 @@ public class PuzzleRepository {
         MutableLiveData<Puzzle> mSelectedPuzzle = new MutableLiveData<>();
 
         Puzzle puzzle = puzzles.get(pPuzzleIndex);
-        mSelectedPuzzle.setValue(puzzle);
+      //  mSelectedPuzzle.setValue(puzzle);
 
-        loadTiles(puzzle.getTilePaths(), mSelectedPuzzle);
+     //   loadTiles(puzzle.getTilePaths(), mSelectedPuzzle);
        // mSelectedPuzzle = transformedPuzzle;
-        return mSelectedPuzzle;
+//       / return mSelectedPuzzle;
+
+        return puzzle;
     }
 
     public void loadPuzzlesFromJSON() {
@@ -278,11 +280,6 @@ public class PuzzleRepository {
         Puzzle puzzle = new Puzzle(mName, mRows, mColumns, mLayout, mTilePaths);
 
         Log.e("makePuzzleObject()", "PuzzleObjectMade");
-
-        if (mName == null) {
-            Log.e("makePuzzleObject()", "mName is NULL");
-        }
-
         return puzzle;
     }
 

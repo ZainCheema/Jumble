@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
+    private Puzzle mPuzzle;
     private Context mContext;
     private ArrayList<Bitmap> mImages;
     LayoutInflater inflater;
