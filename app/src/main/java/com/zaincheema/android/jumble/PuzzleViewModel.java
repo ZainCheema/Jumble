@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -35,4 +36,12 @@ public class PuzzleViewModel extends AndroidViewModel {
         }
        mSelectedPuzzle.setValue(mPuzzleRepository.getPuzzle(mSelectedIndex));
     }
+
+    public void loadPuzzleTiles() {
+        mPuzzleRepository.downloadTiles(mSelectedPuzzle);
+    }
+
+//    public LiveData<ArrayList<Bitmap>> getPuzzleTiles() {
+//        mPuzzleRepository.
+//    }
 }

@@ -238,9 +238,10 @@ public class PuzzleRepository {
 
         for (int i = 0; i < pUrls.size(); i++) {
             String fullPictureUrl;
-            for (int y = 0; y == pDimensions; y++) {
+            for (int y = 1; y <= pDimensions; y++) {
                 String imageFile = String.valueOf(y) + ".png";
-                fullPictureUrl = pUrls.get(i) + imageFile;
+                fullPictureUrl = pUrls.get(i) + "/" + imageFile;
+                Log.e("PARSEPICTURESET()", fullPictureUrl);
                 tilePaths.add(fullPictureUrl);
             }
         }
@@ -252,9 +253,14 @@ public class PuzzleRepository {
         parsePuzzleData(puzzleDataIndex++);
     }
 
-    private void loadTiles(ArrayList<String> pUrls, MutableLiveData<Puzzle> pPuzzleData) {
+    public void downloadTiles(MutableLiveData<Puzzle> pPuzzleData) {
+        Log.e("PuzzleRepository", "downloadTiles() accessed");
+        Log.e("PuzzleRepository", String.valueOf(pPuzzleData.getValue().getTilePaths().size()));
+
         RequestQueue queue = Volley.newRequestQueue(mApplicationContext);
         final MutableLiveData<Puzzle> mutablePuzzle = pPuzzleData;
+
+        ArrayList<String> pUrls = pPuzzleData.getValue().getTilePaths();
 
         for (int i = 0; i < pUrls.size(); i++) {
 
@@ -262,6 +268,7 @@ public class PuzzleRepository {
                     pUrls.get(i), bitmap -> {
                 Puzzle puzzle = mutablePuzzle.getValue();
                 puzzle.addTile(bitmap);
+                Log.e("Tile downloaded!",String.valueOf(puzzle.getTiles().getValue().size()));
                 mutablePuzzle.setValue(puzzle);
             },
                     0, 0,

@@ -2,6 +2,7 @@ package com.zaincheema.android.jumble;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,35 +14,21 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
-    private Puzzle mPuzzle;
     private Context mContext;
     private ArrayList<Bitmap> mImages;
     LayoutInflater inflater;
 
-    public Integer[] thumbImages = {
-            R.drawable.iggy,
-            R.drawable.iggy,
-            R.drawable.iggy,
-            R.drawable.iggy,
-            R.drawable.iggy,
-            R.drawable.iggy,
-            R.drawable.iggy,
-            R.drawable.iggy,
-            R.drawable.iggy,
-            R.drawable.iggy,
-            R.drawable.iggy,
-            R.drawable.iggy
-    };
 
     public ImageAdapter(Context c, ArrayList<Bitmap> i) {
         mContext = c;
         mImages = i;
+        Log.e("ImageAdapter", String.valueOf(i.size()));
         inflater = (LayoutInflater.from(mContext));
     }
 
     @Override
     public int getCount() {
-        return thumbImages.length;
+        return 12;
     }
 
     @Override
@@ -56,14 +43,27 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        view = inflater.inflate(R.layout.grid_image, null);
+        Log.e("ImageAdapter", String.valueOf(mImages.size()));
+        ImageView imageView;
+        if (view == null) {
+            imageView = new ImageView(mContext);
+            DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+            int width = metrics.widthPixels / 3;
+            int height = metrics.heightPixels / 3;
+            imageView.setLayoutParams(new GridView.LayoutParams(width, height));
+        } else {
+            imageView = (ImageView) view;
+        }
 
-        Log.e("ImageAdapter", "Show Grid");
+        if (mImages.size() == 24) {
+            imageView.setImageBitmap(mImages.get(i));
+        } else {
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.icon);
-        imageView.setImageResource( R.drawable.iggy);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-    //    imageView.setLayoutParams(new GridView.LayoutParams(70, 70));
-        return view;
+            imageView.setImageResource(R.drawable.iggy);
+        }
+
+
+        return imageView;
     }
 }
+

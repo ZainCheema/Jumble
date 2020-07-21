@@ -71,7 +71,9 @@ public class MyPuzzleListFragment extends ListFragment {
 
     void showContent(int index) {
         Log.e("ShowContent()", "ShowContent() reached");
-        PuzzleFragment puzzleFragment = PuzzleFragment.newInstance();
+        PuzzleFragment puzzleFragment = PuzzleFragment.newInstance(getContext());
+
+        mViewModel.loadPuzzleTiles();
 
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction
