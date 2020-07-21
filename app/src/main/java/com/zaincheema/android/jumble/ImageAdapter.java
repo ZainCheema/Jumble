@@ -1,10 +1,14 @@
 package com.zaincheema.android.jumble;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -16,14 +20,15 @@ import java.util.ArrayList;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Bitmap> mImages;
+    private GestureDetector mDetector;
     LayoutInflater inflater;
-
 
     public ImageAdapter(Context c, ArrayList<Bitmap> i) {
         mContext = c;
         mImages = i;
         Log.e("ImageAdapter", String.valueOf(i.size()));
         inflater = (LayoutInflater.from(mContext));
+        mDetector = new GestureDetector(mContext, new MyGestureListener());
     }
 
     @Override
@@ -41,29 +46,34 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        Log.e("ImageAdapter", String.valueOf(mImages.size()));
         ImageView imageView;
+
+        Log.e("ImageAdapter", "Image taken: " + String.valueOf(i));
+
         if (view == null) {
+            Log.e("ImageAdapter", "ImageView is null");
             imageView = new ImageView(mContext);
-            DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-            int width = metrics.widthPixels / 3;
-            int height = metrics.heightPixels / 3;
-            imageView.setLayoutParams(new GridView.LayoutParams(width, height));
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setAdjustViewBounds(true);
+            imageView.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
         } else {
             imageView = (ImageView) view;
         }
 
         if (mImages.size() == 24) {
             imageView.setImageBitmap(mImages.get(i));
-        } else {
 
-            imageView.setImageResource(R.drawable.iggy);
         }
-
-
         return imageView;
     }
+
+    private void setPuzzleLayout() {
+
+    }
+
 }
 

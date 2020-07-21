@@ -1,5 +1,6 @@
 package com.zaincheema.android.jumble;
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -23,8 +24,12 @@ import java.util.ArrayList;
 public class PuzzleFragment extends Fragment {
 
     private static Context mContext;
-    GridView gridView;
+    private GridView gridView;
     private ImageAdapter imageAdapter;
+    private PuzzleViewModel mViewModel;
+    private Puzzle mPuzzle;
+
+    private static ProgressDialog progressDialog;
 
     public PuzzleFragment() {
 
@@ -37,9 +42,6 @@ public class PuzzleFragment extends Fragment {
     }
 
 
-    View view;
-    PuzzleViewModel mViewModel;
-    Puzzle mPuzzle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,12 +52,13 @@ public class PuzzleFragment extends Fragment {
         imageAdapter = new ImageAdapter(mContext, mPuzzle.getTiles().getValue());
 
         // This will be an observer that checks to see if all tiles have been loaded,
-        // upon which the gridview would be shown
+        // upon which the gridview with tiles would be shown
         final Observer<ArrayList<Bitmap>> tileObserver = new Observer<ArrayList<Bitmap>>() {
             @Override
             public void onChanged(@Nullable ArrayList<Bitmap> bitmaps) {
                 if(bitmaps.size() == 24) {
                     Log.e("Tiles download complete", "Now showing grid");
+                    progressDialog.cancel();
                     imageAdapter.notifyDataSetChanged();
                 }
             }
@@ -67,24 +70,25 @@ public class PuzzleFragment extends Fragment {
         } catch(NullPointerException e) {
             Log.e("PuzzleFragment", e.getMessage());
         }
-
-       // mViewModel.loadPuzzleTiles();
-    }
-
-    public View updateView() {
-        Log.e("show grid", "createView() called");
-        return gridView;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.puzzle_grid, container, false);
+        View view = inflater.inflate(R.layout.puzzle_grid, container, false);
 
         Log.e("PuzzleFragment", "View created");
 
-        mPuzzle = mViewModel.getSelectedPuzzle().getValue();
+        progressDialog = new ProgressDialog(mContext);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        progressDialog.show();
+
         gridView = view.findViewById(R.id.grid);
+        gridView.setVerticalScrollBarEnabled(false);
+
 
         gridView.setAdapter(imageAdapter);
 

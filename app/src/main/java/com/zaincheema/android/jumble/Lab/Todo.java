@@ -4,12 +4,15 @@ public class Todo {
     // TODO: [DONE] make sure images are being downloaded [DONE]
     // TODO: [DONE] Alter the tile download method such that PuzzleFragment can know when it has been downloaded [DONE]
     // TODO: [DONE] populate gridview [DONE]
-    // TODO: Adjust white space in gridview
-    // TODO: Add progress bar while images are loading, instead of iggy :(
+    // TODO: [DONE] Adjust white space in gridview [DONE]
+    // TODO: [DONE] Add progress bar while images are loading, instead of iggy :( [DONE]
+    // TODO: Imageview isnt the correct aspect ratio for the pngs [DONE]
     // TODO: Gestures recognized
-    // TODO: Move tiles up down, left right
+    // TODO: Blue border to show active tile
+    // TODO: Swap Tiles
     // TODO: Rotate tiles
     // TODO: Tap twice to flip to over side
+    // TODO: Load images in the order of puzzle layout
     // TODO: Track number of moves, refresh button on app bar to reset puzzle
     // TODO: Download puzzles option
     // TODO: Handle cases where wifi is off, the puzzle is exited etc
