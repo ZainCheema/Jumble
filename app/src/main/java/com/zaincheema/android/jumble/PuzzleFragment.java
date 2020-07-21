@@ -89,7 +89,6 @@ public class PuzzleFragment extends Fragment {
         gridView = view.findViewById(R.id.grid);
         gridView.setVerticalScrollBarEnabled(false);
 
-
         gridView.setAdapter(imageAdapter);
 
         return view;

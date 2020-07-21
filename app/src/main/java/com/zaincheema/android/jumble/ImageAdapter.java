@@ -20,7 +20,6 @@ import java.util.ArrayList;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Bitmap> mImages;
-    private GestureDetector mDetector;
     LayoutInflater inflater;
 
     public ImageAdapter(Context c, ArrayList<Bitmap> i) {
@@ -28,7 +27,6 @@ public class ImageAdapter extends BaseAdapter {
         mImages = i;
         Log.e("ImageAdapter", String.valueOf(i.size()));
         inflater = (LayoutInflater.from(mContext));
-        mDetector = new GestureDetector(mContext, new MyGestureListener());
     }
 
     @Override
@@ -66,7 +64,25 @@ public class ImageAdapter extends BaseAdapter {
 
         if (mImages.size() == 24) {
             imageView.setImageBitmap(mImages.get(i));
+            imageView.setOnTouchListener(new OnSwipeTouchListener(mContext) {
+                @Override
+                public void onClick() {
+                    super.onClick();
+                    Log.e("ImageAdapter.java", String.valueOf(i) + " tapped");
+                }
 
+                @Override
+                public void onLongClick() {
+                    super.onLongClick();
+                    Log.e("ImageAdapter.java", String.valueOf(i) + " long pressed");
+                }
+
+                @Override
+                public void onSwipeUp() {
+                    super.onSwipeUp();
+                    Log.e("ImageAdapter.java", String.valueOf(i) + " swiped");
+                }
+            });
         }
         return imageView;
     }
