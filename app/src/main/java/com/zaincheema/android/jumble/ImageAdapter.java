@@ -3,6 +3,8 @@ package com.zaincheema.android.jumble;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +20,9 @@ public class ImageAdapter extends BaseAdapter {
     private ArrayList<Bitmap> mImages;
     LayoutInflater inflater;
 
-    boolean activeTile;
+    Integer activeTilePosition;
+    Bitmap activeTileImage;
+    ImageView activeTileView;
 
     public ImageAdapter(Context c, ArrayList<Bitmap> i) {
         mContext = c;
@@ -47,10 +51,7 @@ public class ImageAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         ImageView imageView;
 
-        Log.e("ImageAdapter", "Image taken: " + String.valueOf(i));
-
         if (view == null) {
-            Log.e("ImageAdapter", "ImageView is null");
             imageView = new ImageView(mContext);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setAdjustViewBounds(true);
@@ -66,13 +67,65 @@ public class ImageAdapter extends BaseAdapter {
                 @Override
                 public void onClick() {
                     super.onClick();
-                    Log.e("ImageAdapter.java", String.valueOf(i) + " tapped");
+                   // Log.e("ImageAdapter.java", String.valueOf(i) + " tapped");
+
+                    // Case where you want to deselect active tile
+                    if(activeTilePosition != null && i == activeTilePosition) {
+                        removeSelectionBorder(imageView);
+                        Log.e("ImageAdapter.java", String.valueOf(i) + " is non-active");
+
+                        activeTilePosition = null;
+                        activeTileView = null;
+                        activeTileImage = null;
+                    }
+                    // Case where you want to swap tiles
+                    else if (activeTilePosition != null && i != activeTilePosition) {
+                        Bitmap swapTileImage = mImages.get(i);
+
+                        // Change the tapped tile's bitmap to the active tiles bitmap
+                        imageView.setImageBitmap(activeTileImage);
+
+                        // and vice versa
+                        removeSelectionBorder(activeTileView);
+                        activeTileView.setImageBitmap(swapTileImage);
+
+
+                        mImages.set(i, activeTileImage);
+                        mImages.set(activeTilePosition, swapTileImage);
+
+                        activeTilePosition = null;
+                        activeTileView = null;
+                        activeTileImage = null;
+                    }
+                    // Case where you want to select a tile, activeTile would be null
+                    else {
+                        addSelectionBorder(imageView);
+                        activeTilePosition = i;
+                        activeTileView = imageView;
+                        activeTileImage = mImages.get(i);
+                        Log.e("ImageAdapter.java", String.valueOf(i) + " is active");
+                    }
                 }
 
                 @Override
                 public void onMediumClick() {
                     super.onMediumClick();
-                    Log.e("ImageAdapter.java", String.valueOf(i) + " medium pressed");
+                    // When active and medium pressed, rotate by 180
+                    if(activeTilePosition != null && i == activeTilePosition) {
+                        Log.e("medium click","Medium press when active");
+                        Matrix matrix = new Matrix();
+                        matrix.postRotate(180);
+                        Bitmap rotatedTile = Bitmap.createBitmap(activeTileImage,
+                                0, 0,
+                                activeTileImage.getWidth(),
+                                activeTileImage.getHeight(),
+                                matrix,
+                                true);
+
+                        activeTileView.setImageBitmap(rotatedTile);
+
+                        mImages.set(i, rotatedTile);
+                    }
                 }
             });
         }
@@ -82,6 +135,20 @@ public class ImageAdapter extends BaseAdapter {
     private void setPuzzleLayout() {
 
     }
+
+    public void addSelectionBorder(ImageView view)
+    {
+        int border = 8;
+        view.setPadding(border,border,border,border);
+        view.setBackgroundColor(Color.CYAN);
+    }
+    public void removeSelectionBorder(ImageView view)
+    {
+        int border = 0;
+        view.setPadding(border,border,border,border);
+        view.setBackgroundColor(Color.BLACK);
+    }
+
 
 }
 
