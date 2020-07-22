@@ -1,14 +1,10 @@
 package com.zaincheema.android.jumble;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -21,6 +17,8 @@ public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Bitmap> mImages;
     LayoutInflater inflater;
+
+    boolean activeTile;
 
     public ImageAdapter(Context c, ArrayList<Bitmap> i) {
         mContext = c;
@@ -64,7 +62,7 @@ public class ImageAdapter extends BaseAdapter {
 
         if (mImages.size() == 24) {
             imageView.setImageBitmap(mImages.get(i));
-            imageView.setOnTouchListener(new OnSwipeTouchListener(mContext) {
+            imageView.setOnTouchListener(new TileTouchListener(mContext) {
                 @Override
                 public void onClick() {
                     super.onClick();
@@ -72,15 +70,9 @@ public class ImageAdapter extends BaseAdapter {
                 }
 
                 @Override
-                public void onLongClick() {
-                    super.onLongClick();
-                    Log.e("ImageAdapter.java", String.valueOf(i) + " long pressed");
-                }
-
-                @Override
-                public void onSwipeUp() {
-                    super.onSwipeUp();
-                    Log.e("ImageAdapter.java", String.valueOf(i) + " swiped");
+                public void onMediumClick() {
+                    super.onMediumClick();
+                    Log.e("ImageAdapter.java", String.valueOf(i) + " medium pressed");
                 }
             });
         }
