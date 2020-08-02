@@ -50,7 +50,7 @@ public class PuzzleRepository {
     private String mName;
     private int mRows;
     private int mColumns;
-    private ArrayList<ArrayList<String>> mLayout = new ArrayList<ArrayList<String>>();
+    private ArrayList<String> mLayout = new ArrayList<String>();
     private ArrayList<String> mTilePaths = new ArrayList<String>();
 
     private PuzzleRepository(Context pApplicationContext) {
@@ -65,25 +65,12 @@ public class PuzzleRepository {
         return sPuzzleRepository;
     }
 
-    // TODO: Problem area, why mPuzzle is null
     public Puzzle getPuzzle(final int pPuzzleIndex) {
-
-//        LiveData<Puzzle> transformedPuzzle = Transformations.switchMap(mPuzzles, puzzles -> {
-//            MutableLiveData<Puzzle> puzzleData = new MutableLiveData<Puzzle>();
-//            Puzzle puzzle = puzzles.get(pPuzzleIndex);
-//            puzzleData.setValue(puzzle);
-//            loadTiles(puzzle.getTilePaths(), puzzleData);
-//            return puzzleData;
-//        });
 
         MutableLiveData<Puzzle> mSelectedPuzzle = new MutableLiveData<>();
 
         Puzzle puzzle = puzzles.get(pPuzzleIndex);
-      //  mSelectedPuzzle.setValue(puzzle);
 
-     //   loadTiles(puzzle.getTilePaths(), mSelectedPuzzle);
-       // mSelectedPuzzle = transformedPuzzle;
-//       / return mSelectedPuzzle;
 
         return puzzle;
     }
@@ -196,19 +183,16 @@ public class PuzzleRepository {
                         //Log.e("COLUMNS", response.getString("columns"));
                         mColumns = Integer.valueOf(response.getString("columns"));
 
-                        ArrayList<ArrayList<String>> layout = new ArrayList<ArrayList<String>>();
+                        ArrayList<String> layout = new ArrayList<String>();
                         JSONArray jsonLayout = response.getJSONArray("layout");
 
                         for (int i = 0; i < jsonLayout.length(); i++) {
                             JSONArray jsonRow = jsonLayout.getJSONArray(i);
-                            ArrayList<String> row = new ArrayList<String>();
 
                             for (int y = 0; y < jsonRow.length(); y++) {
                                 String value = (String) jsonRow.get(y);
-                                row.add(value);
+                                layout.add(value);
                             }
-
-                            layout.add(row);
                         }
 
                         mLayout = layout;

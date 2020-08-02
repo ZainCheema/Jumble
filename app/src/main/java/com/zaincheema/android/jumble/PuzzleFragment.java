@@ -49,7 +49,7 @@ public class PuzzleFragment extends Fragment {
 
         mViewModel = ViewModelProviders.of(getActivity()).get(PuzzleViewModel.class);
         mPuzzle = mViewModel.getSelectedPuzzle().getValue();
-        imageAdapter = new ImageAdapter(mContext, mPuzzle.getTiles().getValue());
+        imageAdapter = new ImageAdapter(mContext, mPuzzle.getTiles().getValue(), mPuzzle, getFragmentManager());
 
         // This will be an observer that checks to see if all tiles have been loaded,
         // upon which the gridview with tiles would be shown

@@ -38,10 +38,11 @@ public class PuzzleViewModel extends AndroidViewModel {
     }
 
     public void loadPuzzleTiles() {
+        if(mSelectedPuzzle.getValue().getTiles().getValue().isEmpty()) {
         mPuzzleRepository.downloadTiles(mSelectedPuzzle);
+        } else {
+            Log.e("PuzzleViewModel", "Puzzle Tiles have already been downloaded");
+        }
     }
 
-//    public LiveData<ArrayList<Bitmap>> getPuzzleTiles() {
-//        mPuzzleRepository.
-//    }
 }

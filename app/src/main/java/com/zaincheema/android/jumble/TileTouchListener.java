@@ -42,6 +42,12 @@ public class TileTouchListener implements View.OnTouchListener {
             onClick();
             return super.onSingleTapUp(e);
         }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            onLongCLick();
+            super.onLongPress(e);
+        }
     }
 
     public void onClick() {
@@ -49,6 +55,10 @@ public class TileTouchListener implements View.OnTouchListener {
     }
 
     public void onMediumClick() {
+
+    }
+
+    public void onLongCLick() {
 
     }
 }

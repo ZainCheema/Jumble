@@ -1,6 +1,7 @@
 package com.zaincheema.android.jumble;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +35,12 @@ public class PuzzleAdapter extends ArrayAdapter<Puzzle> {
 
         TextView puzzleName = (TextView) puzzleItem.findViewById(R.id.textView_puzzle_title);
         puzzleName.setText(currentPuzzle.getName());
+
+        TextView puzzleScore = (TextView) puzzleItem.findViewById(R.id.textView_high_score);
+
+        SharedPreferences prefs = mContext.getSharedPreferences(currentPuzzle.getName(), Context.MODE_PRIVATE);
+
+        puzzleScore.setText("High Score: " + String.valueOf(prefs.getInt(currentPuzzle.getName(),  100)));
 
         return puzzleItem;
     }

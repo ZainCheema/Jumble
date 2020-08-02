@@ -13,10 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
-
-import com.zaincheema.android.jumble.Lab.DummyData;
-
 import java.util.ArrayList;
 
 public class MyPuzzleListFragment extends ListFragment {
@@ -58,13 +54,10 @@ public class MyPuzzleListFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-      // PuzzleAdapter puzzleAdapter = new PuzzleAdapter(getActivity(), mViewModel.getPuzzles().getValue());
-      //  setListAdapter(puzzleAdapter);
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Log.e("MyPuzzleListFragment", "CLICKED!!!");
         mViewModel.selectPuzzle(position);
         showContent(position);
     }
